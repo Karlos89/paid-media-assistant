@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadHistory = async () => {
-      const res = await fetch(`http://127.0.0.1:8000/history/${CONVERSATION_ID}`);
+      const res = await fetch(`https://paid-media-assistant-production.up.railway.app/history/${CONVERSATION_ID}`);
       const data = await res.json();
       setMessages(data.messages);
     };
@@ -29,7 +29,7 @@ export default function Home() {
     setInput("");
     setLoading(true);
 
-    const res = await fetch("http://127.0.0.1:8000/chat", {
+    const res = await fetch("https://paid-media-assistant-production.up.railway.app/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: input, conversation_id: CONVERSATION_ID }),
