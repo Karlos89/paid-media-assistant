@@ -1,7 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 
 const CONVERSATION_ID = "web-session";
+const API_URL = "http://127.0.0.1:8000";
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -11,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadHistory = async () => {
-      const res = await fetch(`https://paid-media-assistant-production.up.railway.app/history/${CONVERSATION_ID}`);
+      const res = await fetch(`${API_URL}/history/${CONVERSATION_ID}`);
       const data = await res.json();
       setMessages(data.messages);
     };
@@ -29,7 +31,7 @@ export default function Home() {
     setInput("");
     setLoading(true);
 
-    const res = await fetch("https://paid-media-assistant-production.up.railway.app/chat", {
+    const res = await fetch(`${API_URL}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: input, conversation_id: CONVERSATION_ID }),
@@ -43,13 +45,19 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen bg-gray-950 text-white">
       <div className="p-4 border-b border-gray-800 text-center font-bold text-lg">
-        🚀 Paid Media Assistant
+        🤖 Mr. Poolbot
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className={`max-w-xl px-4 py-2 rounded-2xl text-sm ${m.role === "user" ? "bg-blue-600" : "bg-gray-800"}`}>
-              {m.content}
+              {m.role === "assistant" ? (
+                <ReactMarkdown>
+                  {m.content}
+                </ReactMarkdown>
+              ) : (
+                m.content
+              )}
             </div>
           </div>
         ))}
